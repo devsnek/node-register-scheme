@@ -30,9 +30,8 @@ static bool RegisterURL(const char* scheme) {
 }
 
 bool Register(const char* scheme, const char* command) {
-  // raii lite 
-  void* pool = [[NSAutoreleasePool alloc] init];
-  bool ret = RegisterURL(scheme);
-  [(id)pool drain];
-  return ret;
+  // raii lite
+  @autoreleasepool {
+    return RegisterURL(scheme);
+  }
 }

@@ -28,10 +28,11 @@ bool RegisterW(const wchar_t* scheme, const wchar_t* command) {
   DWORD exeLen = GetModuleFileNameExW(GetCurrentProcess(), nullptr, exeFilePath, MAX_PATH);
   wchar_t openCommand[1024];
 
-  if (command && command[0])
+  if (command && command[0]) {
     StringCbPrintfW(openCommand, sizeof(openCommand), L"%s", command);
-  else
+  } else {
     StringCbCopyW(openCommand, sizeof(openCommand), exeFilePath);
+  }
 
   wchar_t protocolName[64];
   StringCbPrintfW(protocolName, sizeof(protocolName), L"%s", scheme);
@@ -44,8 +45,9 @@ bool RegisterW(const wchar_t* scheme, const wchar_t* command) {
   HKEY key;
   auto status =
     RegCreateKeyExW(HKEY_CURRENT_USER, keyName, 0, nullptr, 0, KEY_WRITE, nullptr, &key, nullptr);
-  if (status != ERROR_SUCCESS)
+  if (status != ERROR_SUCCESS) {
     return false;
+  }
 
   DWORD len;
   LSTATUS result;

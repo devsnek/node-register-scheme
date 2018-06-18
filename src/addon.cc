@@ -9,7 +9,7 @@ Napi::Value RPH(const Napi::CallbackInfo& info) {
 }
 
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
-  exports.Set("registerProtocolHandler", Napi::Function::New(env, RPH));
+  exports["registerProtocolHandler"] = Napi::Function::New(env, RPH);
   return exports;
 }
 

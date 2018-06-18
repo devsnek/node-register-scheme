@@ -12,7 +12,7 @@ bool Mkdir(const char* path) {
   if (result == 0) 
     return true;
   if (errno == EEXIST)
-      return true;
+    return true;
   return false;
 }
 
