@@ -29,7 +29,7 @@ static bool RegisterURL(const char* scheme) {
   return true;
 }
 
-bool Register(const char* scheme, const char* command) {
+bool Register(const char* scheme, const char* description, const char* command) {
   // raii lite
   @autoreleasepool {
     return RegisterURL(scheme);

@@ -1,3 +1,5 @@
 node_modules
-shrinkwrap.yaml
+.DS_Store
+lib/binding
 build
+build-tmp-napi-*

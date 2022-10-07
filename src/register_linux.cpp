@@ -16,20 +16,20 @@ bool Mkdir(const char* path) {
   return false;
 }
 
-extern "C" bool Register(const char* scheme, const char* command) {
+bool RegisterURL(const char* scheme, const char* command) {
   // Add a desktop file and update some mime handlers so that xdg-open does the right thing.
   const char* home = getenv("HOME");
   if (!home)
     return false;
 
   char exePath[1024];
-  if (!command || !command[0]) {
+  if (strlen(command[0]) == 0) {
     if (readlink("/proc/self/exe", exePath, sizeof(exePath)) <= 0)
       return false;
     command = exePath;
   }
 
-  const char* destopFileFormat = "[Desktop Entry]\n"
+  const char* desktopFileFormat = "[Desktop Entry]\n"
                                  "Name=Game %s\n"
                                  "Exec=%s %%u\n" // note: it really wants that %u in there
                                  "Type=Application\n"
@@ -38,7 +38,7 @@ extern "C" bool Register(const char* scheme, const char* command) {
 
   char desktopFile[2048];
   int fileLen = snprintf(
-    desktopFile, sizeof(desktopFile), destopFileFormat, scheme, command, scheme);
+    desktopFile, sizeof(desktopFile), desktopFileFormat, scheme, command, scheme);
 
   if (fileLen <= 0)
       return false;
@@ -80,4 +80,8 @@ extern "C" bool Register(const char* scheme, const char* command) {
     return false;
 
   return false;
+}
+
+extern "C" bool Register(const char* scheme, const char* description, const char* command) {
+  return RegisterURL(scheme, command);
 }
