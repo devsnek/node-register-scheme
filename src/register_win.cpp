@@ -20,24 +20,32 @@
 #include <psapi.h>
 #include <strsafe.h>
 
-bool RegisterW(const wchar_t* scheme, const wchar_t* command) {
+#include <iostream>
+
+bool RegisterW(const wchar_t* scheme, const wchar_t* description, const wchar_t* command) {
   // https://msdn.microsoft.com/en-us/library/aa767914(v=vs.85).aspx
   // Update the HKEY_CURRENT_USER, because it doesn't seem to require special permissions.
 
   wchar_t exeFilePath[MAX_PATH];
   DWORD exeLen = GetModuleFileNameExW(GetCurrentProcess(), nullptr, exeFilePath, MAX_PATH);
-  wchar_t openCommand[1024];
 
-  if (command && command[0]) {
-    StringCbPrintfW(openCommand, sizeof(openCommand), L"%s", command);
+  wchar_t protocolName[64];
+  StringCbCopyW(protocolName, sizeof(protocolName), scheme);
+
+  wchar_t openCommand[1024];
+  if (wcslen(command) != 0) {
+    StringCbCopyW(openCommand, sizeof(openCommand), command);
   } else {
     StringCbCopyW(openCommand, sizeof(openCommand), exeFilePath);
   }
 
-  wchar_t protocolName[64];
-  StringCbPrintfW(protocolName, sizeof(protocolName), L"%s", scheme);
   wchar_t protocolDescription[128];
-  StringCbPrintfW(protocolDescription, sizeof(protocolDescription), L"URL:Run %s protocol", scheme);
+  if (wcslen(description) != 0) {
+    StringCbCopyW(protocolDescription, sizeof(protocolDescription), description);
+  } else {
+    StringCbPrintfW(protocolDescription, sizeof(protocolDescription), L"URL: %s", scheme);
+  }
+
   wchar_t urlProtocol = 0;
 
   wchar_t keyName[256];
@@ -78,18 +86,16 @@ bool RegisterW(const wchar_t* scheme, const wchar_t* command) {
   return true;
 }
 
-extern "C" bool Register(const char* scheme, const char* command) {
-  wchar_t appId[32];
-  MultiByteToWideChar(CP_UTF8, 0, scheme, -1, appId, 32);
+extern "C" bool Register(const char* scheme, const char* description, const char* command) {
+  wchar_t wscheme[32];
+  MultiByteToWideChar(CP_UTF8, 0, scheme, 32, wscheme, 32);
 
-  wchar_t openCommand[1024];
-  const wchar_t* wcommand = nullptr;
-  if (command && command[0]) {
-    const auto commandBufferLen = sizeof(openCommand) / sizeof(*openCommand);
-    MultiByteToWideChar(CP_UTF8, 0, command, -1, openCommand, commandBufferLen);
-    wcommand = openCommand;
-  }
+  wchar_t wdescription[128];
+  MultiByteToWideChar(CP_UTF8, 0, description, 128, wdescription, 128);
 
-  return RegisterW(appId, wcommand);
+  wchar_t wcommand[1024];
+  MultiByteToWideChar(CP_UTF8, 0, command, 1024, wcommand, 1024);
+
+  return RegisterW(wscheme, wdescription, wcommand);
 }
 

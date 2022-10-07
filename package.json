@@ -1,11 +1,13 @@
 {
   "name": "register-scheme",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
-    "install": "node-gyp rebuild",
-    "build": "node-gyp build"
+    "install": "node-pre-gyp install --fallback-to-build",
+    "build": "node-pre-gyp build -m -j max",
+    "test": "node test/index.test.js"
   },
   "repository": {
     "type": "git",
@@ -13,13 +15,31 @@
   },
   "author": "snek <me@gus.host>",
   "license": "MIT",
-  "gypfile": true,
+  "binary": {
+    "module_name": "register-protocol-handler",
+    "module_path": "./lib/binding/napi-v{napi_build_version}-{platform}-{libc}-{arch}",
+    "package_name": "napi-v{napi_build_version}-{platform}-{libc}-{arch}.tar.gz",
+    "host": "https://github.com/devsnek/node-register-scheme/releases/download/",
+    "remote_path": "v{version}",
+    "napi_versions": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ]
+  },
   "bugs": {
     "url": "https://github.com/devsnek/node-register-scheme/issues"
   },
   "homepage": "https://github.com/devsnek/node-register-scheme#readme",
   "dependencies": {
-    "bindings": "^1.3.0",
-    "node-addon-api": "^1.3.0"
+    "@mapbox/node-pre-gyp": "^1.0.10",
+    "node-addon-api": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.7.18",
+    "node-pre-gyp-github": "^1.4.4"
   }
 }

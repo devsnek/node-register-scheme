@@ -1,18 +1,35 @@
 {
   "targets": [
     {
-      "target_name": "register-protocol-handler",
-      "target_type": "static_library",
-      "cflags!": [ "-fno-exceptions" ],
-      "cflags_cc!": [ "-fno-exceptions" ],
+      "target_name": "<(module_name)",
       "sources": [
         "src/addon.cc",
+      ],
+      "include_dirs": [
+        "<!(node -p \"require('node-addon-api').include_dir\")"
+      ],
+      "dependencies": [
+        "<!(node -p \"require('node-addon-api').gyp\")"
+      ],
+      "cflags!": [
+        "-fno-exceptions"
+      ],
+      "cflags_cc!": [
+        "-fno-exceptions"
       ],
       'conditions': [
          ['OS == "win"', {
           'sources': [
             'src/register_win.cpp',
           ],
+          "defines": [
+            "_HAS_EXCEPTIONS=1"
+          ],
+          "msvs_settings": {
+            "VCCLCompilerTool": {
+             "ExceptionHandling": 1
+            }
+          }
         }],
         ['OS == "linux"', {
           'sources': [
@@ -23,28 +40,35 @@
           'sources': [
             'src/register_mac.m',
           ],
-          'defines': ['__MACOSX_CORE__'],
-          'link_settings': {
-            'libraries': [
-              '-framework Foundation'
-            ],
-          },
-          'xcode_settings': {
-            'CLANG_CXX_LIBRARY': 'libc++',
-            'OTHER_CFLAGS': [
-              '-ObjC++',
-              '-std=c++11'
-            ],
-          },
+          "cflags+": [
+             "-fvisibility=hidden"
+          ],
+          "xcode_settings": {
+             "GCC_ENABLE_CPP_EXCEPTIONS": "YES",
+             "CLANG_CXX_LIBRARY": "libc++",
+             "MACOSX_DEPLOYMENT_TARGET": "10.7",
+             "GCC_SYMBOLS_PRIVATE_EXTERN": "YES"
+          }
         }],
       ],
-      "include_dirs": [
-        "<!@(node -p \"require('node-addon-api').include\")",
+      "defines": [
+        "NAPI_VERSION=<(napi_build_version)"
       ],
-      'dependencies': [
-        "<!(node -p \"require('node-addon-api').gyp\")",
+    },
+    {
+      "target_name": "action_after_build",
+      "type": "none",
+      "dependencies": [
+        "<(module_name)"
       ],
-      "defines": [ 'NAPI_DISABLE_CPP_EXCEPTIONS' ],
+      "copies": [
+        {
+          "files": [
+            "<(PRODUCT_DIR)/<(module_name).node"
+          ],
+          "destination": "<(module_path)"
+        }
+      ]
     }
   ]
 }
