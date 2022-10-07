@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xhayper/node-register-scheme.git"
+    "url": "git+https://github.com/devsnek/node-register-scheme.git"
   },
   "author": "snek <me@gus.host>",
   "license": "MIT",
@@ -19,7 +19,7 @@
     "module_name": "register-protocol-handler",
     "module_path": "./lib/binding/napi-v{napi_build_version}-{platform}-{libc}-{arch}",
     "package_name": "napi-v{napi_build_version}-{platform}-{libc}-{arch}.tar.gz",
-    "host": "https://github.com/xhayper/node-register-scheme/releases/download/",
+    "host": "https://github.com/devsnek/node-register-scheme/releases/download/",
     "remote_path": "v{version}",
     "napi_versions": [
       3,
@@ -31,9 +31,9 @@
     ]
   },
   "bugs": {
-    "url": "https://github.com/xhayper/node-register-scheme/issues"
+    "url": "https://github.com/devsnek/node-register-scheme/issues"
   },
-  "homepage": "https://github.com/xhayper/node-register-scheme#readme",
+  "homepage": "https://github.com/devsnek/node-register-scheme#readme",
   "dependencies": {
     "@mapbox/node-pre-gyp": "^1.0.10",
     "node-addon-api": "^5.0.0"
